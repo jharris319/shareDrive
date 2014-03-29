@@ -28,3 +28,4 @@ C:\Users\Jonathan\Documents\GitHub\shareDrive\obj\Debug\shareDrive.csprojResolve
 C:\Users\Jonathan\Documents\GitHub\shareDrive\obj\Debug\ShareDrive.shareDrive.resources
 C:\Users\Jonathan\Documents\GitHub\shareDrive\obj\Debug\ShareDrive.Properties.Resources.resources
 C:\Users\Jonathan\Documents\GitHub\shareDrive\obj\Debug\shareDrive.csproj.GenerateResource.Cache
+C:\Users\Jonathan\Documents\GitHub\shareDrive\obj\Debug\ShareDrive.sleeper.resources
