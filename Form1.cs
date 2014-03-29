@@ -61,7 +61,7 @@ namespace ShareDrive
             int sReturnValue = WNetAddConnection2(myResource, password.Text, username.Text, 0);
 
             // Check the return value from WNetAddConnection2
-            if (hReturnValue == 0 && hReturnValue == 0)
+            if (hReturnValue == 0) // Sucessful Connection
             {
                 // Hide Form1
                 this.Hide();
@@ -77,7 +77,7 @@ namespace ShareDrive
                     this.Close();
                 }
             }
-            else
+            else // Failed Connection
             {
                 MessageBox.Show("Invalid username or password, please try again.\nError Code: " + hReturnValue,"Login Attempt Failed");
             }
