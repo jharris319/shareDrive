@@ -60,9 +60,9 @@ namespace ShareDrive
             netResource.RemoteName = @"\\$SERVER-IP\share";
             int sReturnValue = WNetAddConnection2(netResource, password.Text, "$DOMAIN1\\" + username.Text, 0);
 
-            // If the ua-net domain fails, the user may still
-            // be on the asnet domain, so try the username
-            // with the asnet domain
+            // If domain1 fails, the user may still
+            // be on domain2, so try the username
+            // with domain2
             if (hReturnValue > 0 || sReturnValue > 0)
             {
                 // Try the H: Drive - domain2
