@@ -42,23 +42,39 @@ namespace ShareDrive
 
         private void bnLogin_Click(object sender, EventArgs e)
         {
-            NETRESOURCE myResource = new NETRESOURCE();
-            myResource.dwScope = 0;
-            myResource.dwType = 0;
-            myResource.dwDisplayType = 0;
-            myResource.LocalName = "h:";
-            myResource.RemoteName = @"\\192.168.1.192\testShare";
-            myResource.dwUsage = 0;
-            myResource.Comment = "";
-            myResource.Provider = "";
+            NETRESOURCE netResource = new NETRESOURCE();
+            netResource.dwScope = 0;
+            netResource.dwType = 0;
+            netResource.dwDisplayType = 0;
+            netResource.LocalName = "h:";
+            netResource.RemoteName = @"\\$SERVER-IP\users\home\" + username.Text;
+            netResource.dwUsage = 0;
+            netResource.Comment = "";
+            netResource.Provider = "";
 
-            // Try the H: Drive
-            int hReturnValue = WNetAddConnection2(myResource, password.Text, username.Text, 0);
+            // Try the H: Drive - domain1
+            int hReturnValue = WNetAddConnection2(netResource, password.Text, "$DOMAIN1\\" + username.Text, 0);
 
-            // Try the S: Drive
-            myResource.LocalName = "s:";
-            myResource.RemoteName = @"\\192.168.1.192\testShare2";
-            int sReturnValue = WNetAddConnection2(myResource, password.Text, username.Text, 0);
+            // Try the S: Drive - domain1
+            netResource.LocalName = "s:";
+            netResource.RemoteName = @"\\$SERVER-IP\share";
+            int sReturnValue = WNetAddConnection2(netResource, password.Text, "$DOMAIN1\\" + username.Text, 0);
+
+            // If the ua-net domain fails, the user may still
+            // be on the asnet domain, so try the username
+            // with the asnet domain
+            if (hReturnValue > 0 || sReturnValue > 0)
+            {
+                // Try the H: Drive - domain2
+                netResource.LocalName = "h:";
+                netResource.RemoteName = @"\\$SERVER-IP\users\home\" + username.Text;
+                hReturnValue = WNetAddConnection2(netResource, password.Text, "$DOMAIN2\\" + username.Text, 0);
+
+                // Try the S: Drive - domain2
+                netResource.LocalName = "s:";
+                netResource.RemoteName = @"\\SERVER-IP\share";
+                sReturnValue = WNetAddConnection2(netResource, password.Text, "$DOMAIN2\\" + username.Text, 0);
+            }
 
             // Check the return value from WNetAddConnection2
             if (hReturnValue == 0) // Sucessful Connection
@@ -79,8 +95,22 @@ namespace ShareDrive
             }
             else // Failed Connection
             {
+                // TODO -- Add statements to differentiate error numbers
+                // the current method isn't all too helpful
                 MessageBox.Show("Invalid username or password, please try again.\nError Code: " + hReturnValue,"Login Attempt Failed");
             }
+        }
+
+        private void shareDrive_Load(object sender, EventArgs e)
+        {
+            WNetCancelConnection2("h:", 0, 1);
+            WNetCancelConnection2("s:", 0, 1);
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            WNetCancelConnection2("h:", 0, 1);
+            WNetCancelConnection2("s:", 0, 1);
         }
     }
 }
